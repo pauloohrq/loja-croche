@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Loja com Carrinho e Cupom de Desconto</title>
+<style>
+body { font-family: Arial; padding: 20px; background: #f2f2f2; }
+.container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
+.produto { border: 1px solid #ccc; padding: 10px; border-radius: 10px; margin-bottom: 10px; }
+button { padding: 8px 15px; border: none; background: #28a745; color: #fff; border-radius: 5px; cursor: pointer; }
+button:hover { background: #218838; }
+#carrinho { margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 10px; }
+input { padding: 5px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Loja Teste</h2>
+
+<div class="produto">
+<h3>Produto 1</h3>
+<p>Preço: R$ 50,00</p>
+<button onclick="adicionarCarrinho('Produto 1', 50)">Adicionar ao carrinho</button>
+</div>
+
+<div class="produto">
+<h3>Produto 2</h3>
+<p>Preço: R$ 120,00</p>
+<button onclick="adicionarCarrinho('Produto 2', 120)">Adicionar ao carrinho</button>
+</div>
+
+<h2>Carrinho</h2>
+<div id="carrinho">
+<p>Nenhum item no carrinho</p>
+</div>
+
+<h3>Aplicar Cupom</h3>
+<input type="text" id="cupom" placeholder="Digite o cupom">
+<button onclick="aplicarCupom()">Aplicar</button>
+
+<h3>Total: R$ <span id="total">0.00</span></h3>
+
+</div>
+
+<script>
+let carrinho = [];
+let desconto = 0;
+let cupomAplicado = false;
+
+function atualizarCarrinho() {
+    let div = document.getElementById("carrinho");
+    if (carrinho.length === 0) {
+        div.innerHTML = "<p>Nenhum item no carrinho</p>";
+    } else {
+        let html = "<ul>";
+        carrinho.forEach(item => {
+            html += "<li>" + item.nome + " - R$ " + item.preco.toFixed(2) + "</li>";
+        });
+        html += "</ul>";
+        div.innerHTML = html;
+    }
+
+    let total = carrinho.reduce((acc, item) => acc + item.preco, 0);
+    total -= desconto;
+    if (total < 0) total = 0;
+    document.getElementById("total").innerText = total.toFixed(2);
+}
+
+function adicionarCarrinho(nome, preco) {
+    carrinho.push({ nome, preco });
+    atualizarCarrinho();
+}
+
+function aplicarCupom() {
+    if (cupomAplicado) {
+        alert("Você já aplicou um cupom!");
+        return;
+    }
+
+    let cupom = document.getElementById("cupom").value.trim().toUpperCase();
+
+    if (cupom === "DESCONTO10") {
+        desconto = 10;
+        cupomAplicado = true;
+        alert("Cupom aplicado: R$ 10 de desconto!");
+    } else if (cupom === "METADE") {
+        let total = carrinho.reduce((acc, item) => acc + item.preco, 0);
+        desconto = total / 2;
+        cupomAplicado = true;
+        alert("Cupom aplicado: 50% de desconto!");
+    } else {
+        alert("Cupom inválido!");
+        return;
+    }
+
+    atualizarCarrinho();
+}
+</script>
+
+</body>
+</html>
